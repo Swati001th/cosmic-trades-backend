@@ -12,20 +12,18 @@ const UserModel  = require("../Models/UserModel");
 exports.login = async(req,res)=>{
     try {
         const schema = Joi.object().keys({
-            mobileNumber: Joi.string().required(),
-            countryCode: Joi.string().required(),
-            password: Joi.string().required(),
-      
+            userName: Joi.string().required(),       
+            password: Joi.string().required(),      
         })
         let da = await schema.validateAsync(req.body);
         let data =  req.body;
         var accessToken = auth.generateToken();
         let userExist = await UserModel.findOne({
-        countryCode: data.countryCode,
-        mobileNumber: Number(data.mobileNumber),
+            userName: data.userName,
+   
         }).lean();
         if (!userExist || userExist == null) {
-            throw new Error("Mobile Number does not exist."); 
+            throw new Error("User Name does not exist."); 
        
         }
         let checkPass = await utill.compare(data.password, userExist.password);
@@ -34,8 +32,8 @@ exports.login = async(req,res)=>{
         if (checkPass) {
             userDetails = await UserModel.findOneAndUpdate(
                 {
-                countryCode: data.countryCode,
-                mobileNumber: Number(data.mobileNumber),
+                // countryCode: data.countryCode,
+                userName: data.userName,
                 },
                 {
                 $set: {
@@ -62,12 +60,17 @@ exports.userSignup = async(req, res) => {
 
     try {
         const schema = Joi.object().keys({
-            mobileNumber: Joi.string().required(),
-            countryCode: Joi.string().required(),
-            email: Joi.string().allow("").optional(),
+            firstName: Joi.string().min(3).required(),
+            lastName: Joi.string().min(3).required(),
+            userName: Joi.string().alphanum().min(3).max(30).required(),
             password: Joi.string().required(),         
+            email: Joi.string().min(8).email({ minDomainSegments: 2, tlds: { allow: ['com', 'net','in','io'] } }).required(),
+            countryCode: Joi.number().required(),
+            mobileNumber: Joi.number().required(),
+            deposite: Joi.number().required(),
+            address: Joi.string().required(),
             deviceType: Joi.number().required(),
-            userType: Joi.number().required(),
+            deviceToken: Joi.string().required(),
         })
         let da = await schema.validateAsync(req.body);
         
@@ -77,8 +80,13 @@ exports.userSignup = async(req, res) => {
             type: 'Point',
             "coordinates": [req.body.latitude, req.body.longitude, ]
         }
-        var {          
+        var {   
+            firstName, 
+            lastName,      
             password,
+            userName,
+            deposite,
+            address,
             deviceToken,
             deviceType,
             longitude,
@@ -94,12 +102,16 @@ exports.userSignup = async(req, res) => {
         let refcode = common.makeReffralCode(8)
         let refferalCode = "EVA$_" + refcode;
         if (mobileNumber != "" && mobileNumber) {
-            let userData = await UserModel.findOne({ $and: [{ "mobileNumber": mobileNumber }, { "countryCode": countryCode }, { "userType": userType }] })
+            let userData = await UserModel.findOne({ $and: [{ "mobileNumber": mobileNumber }, { "countryCode": countryCode },] })
             if (userData) {
                 throw new Error("Mobile Number Already Exit");        
             }
+            let nameData = await UserModel.findOne({ $and: [{ "userName": userName }] })
+            if (nameData) {
+                throw new Error("UserName Already Exit");        
+            }
         }
-        let Data = { mobileNumber, location, longitude, latitude, countryCode, accessToken, verificationCode, deviceToken, email, deviceType, userType, password: encPassword,refferalCode:refferalCode };
+        let Data = { firstName, lastName, mobileNumber, deposite, address, userName, location, longitude, latitude, countryCode, accessToken, verificationCode, deviceToken, email, deviceType, userType, password: encPassword,refferalCode:refferalCode };
 
         let user = new UserModel(Data);
         let userDetails = await user.save();
@@ -108,7 +120,7 @@ exports.userSignup = async(req, res) => {
             throw new Error('Unable to add details.')
         }
         // let findUser = await UserModel.deleteMany();
-        res.status(200).json({ response: findUser, message: 'Signup Successfully' });
+        res.status(200).json({ response: userDetails, message: 'Signup Successfully' });
 
 
     } catch (error) {
@@ -118,12 +130,30 @@ exports.userSignup = async(req, res) => {
 
 }
 
-exports.verifyOtp =  async(req,res)=>{
+exports.emailVerify =  async(req,res)=>{
     try {
+        const schema = Joi.object().keys({
+            verficationCode: Joi.string().required(),      
+            emailId: Joi.string().required(),      
+        })
+        let da = await schema.validateAsync(req.body);
+        let userId = req.userData._id
+        let email = req.userData.emailId
+        let verificationCode = req.userData.verificationCode
+        let otmMsg =null;
+        console.log(verificationCode)
+        if(req.body.email == email){
+            if(verificationCode == req.body.verficationCode){
 
-        
-        let otmMsg = "this is otp msg ";
-        console.log("this opt send :::::")
+                otmMsg = "verification success !!";
+            }else{
+                throw new Error('Invalid verificationCode .')
+            }
+        }else{
+            throw new Error('Invalid Email .')
+        }
+        console.log(userId)
+      
         res.status(200).json({ response: otmMsg, message: 'Success' });
     } catch (error) {
         console.log(error)

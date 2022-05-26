@@ -9,5 +9,5 @@ router.get('/', function(req, res, next) {
 
 router.post("/login", controller.login)
 router.post("/userSignup", controller.userSignup)
-router.post("/otpVerify",auth.userAuthentication, controller.verifyOtp)
+router.post("/emailVerify",auth.userAuthentication, controller.emailVerify)
 module.exports = router;

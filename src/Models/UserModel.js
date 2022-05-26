@@ -6,6 +6,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: null
     },
+    userName: {
+        type: String,
+        required:true,       
+    },
     countryCode: {
         type: String,
         default: null
@@ -43,6 +47,14 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: null
     },
+    address: {
+        type: String,
+        default: null
+    },
+    deposite: {
+        type: Number,
+        default: null
+    },
 
     deviceType: {
         type: Number, // 1 for android 2 for IOS
@@ -67,7 +79,7 @@ const UserSchema = new mongoose.Schema({
     },
     otp: {
         type: String,
-        default: "4321"
+        default: "654321"
     },
     isMobileVerified: {
         type: String,
@@ -120,39 +132,39 @@ const UserSchema = new mongoose.Schema({
         default: 0 
     },   
     
-    bankDetail: {
-        accountNumber:{
-            type: String,
-            default:null
-        },
-        accountHoldarName:{
-            type: String,
-            default:null
-        },
-        branchName:{
-            type: String,
-            default:null
-        },
-        ifscCode:{
-            type: String,
-            default:null
-        }
-    },
-    cardDetails: {
-        cardNumber : {
-            type: String,
-            default:null
-        },
-        cardExpiryDate : {
-            type: String,
-            default:null
-        },
-        cvv : {
-            type: String,
-            default:null
-        },
+    // bankDetail: {
+    //     accountNumber:{
+    //         type: String,
+    //         default:null
+    //     },
+    //     accountHoldarName:{
+    //         type: String,
+    //         default:null
+    //     },
+    //     branchName:{
+    //         type: String,
+    //         default:null
+    //     },
+    //     ifscCode:{
+    //         type: String,
+    //         default:null
+    //     }
+    // },
+    // cardDetails: {
+    //     cardNumber : {
+    //         type: String,
+    //         default:null
+    //     },
+    //     cardExpiryDate : {
+    //         type: String,
+    //         default:null
+    //     },
+    //     cvv : {
+    //         type: String,
+    //         default:null
+    //     },
        
-    },
+    // },
     
     latitude: {
         type: Number,
@@ -171,17 +183,17 @@ const UserSchema = new mongoose.Schema({
         },
         coordinates: [Number]
     },
-    favlocation: {
-        type: {
-            type: String,
-            default: 'Point'
-        },
-        address: {
-            type: String,
-            default: null
-        },
-        coordinates: [Number]
-    },
+    // favlocation: {
+    //     type: {
+    //         type: String,
+    //         default: 'Point'
+    //     },
+    //     address: {
+    //         type: String,
+    //         default: null
+    //     },
+    //     coordinates: [Number]
+    // },
     
     
     rewardPoint: {
