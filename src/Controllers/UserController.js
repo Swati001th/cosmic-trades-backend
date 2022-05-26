@@ -9,6 +9,7 @@ const config = require("../Helpers/config");
 const auth = require("../Modules/auth");
 const utill = require("../Modules/utill");
 const UserModel  = require("../Models/UserModel");
+const AboutModel  = require("../Models/AboutModel");
 exports.login = async(req,res)=>{
     try {
         const schema = Joi.object().keys({
@@ -43,6 +44,42 @@ exports.login = async(req,res)=>{
                 },
                 },
                 { new: true }
+            ).lean();
+        
+        } else {
+            throw new Error("Password does not match.");  
+       
+        }
+        
+        res.status(200).json({ response: userDetails, message: "success" });
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+}
+
+exports.changePassword = async(req,res)=>{
+    try {
+        const schema = Joi.object().keys({
+            currentPassword: Joi.string().required(),       
+            setNewpassword: Joi.string().required(),      
+        })
+        let da = await schema.validateAsync(req.body);
+        let data =  req.body;
+        let userId = req.userData._id
+        let userExist = await UserModel.findOne({
+            _id: userId,
+   
+        }).lean();
+        if (!userExist || userExist == null) {
+            throw new Error("In valid user "); 
+       
+        }
+        let checkPass = await utill.compare(data.currentPassword, userExist.password);
+        console.log(checkPass,"::::::::::::::::::::::::::password");
+        let  userDetails = null
+        if (checkPass) {
+            let encPassword = await utill.encryptText(data.setNewpassword);
+            userDetails = await UserModel.findByIdAndUpdate(userId,{$set: {password: encPassword},},{ new: true }
             ).lean();
         
         } else {
@@ -160,3 +197,96 @@ exports.emailVerify =  async(req,res)=>{
         res.status(403).json({ message: error.message }); 
     }
 }
+
+exports.logout =  async(req,res)=>{
+    try {
+       
+        let userId = req.userData._id;
+        let logoutObj = {
+            deviceToken:null,
+            accessToken:null,
+        }    
+        var findUser = await UserModel.findByIdAndUpdate(userId, {$set:logoutObj},{new:true})
+        res.status(200).json({ response: findUser, message: 'Success' });
+    } catch (error) {
+        console.log(error)
+        res.status(403).json({ message: error.message }); 
+    }
+}
+
+exports.account =  async(req,res)=>{
+    try {
+       
+        let userId = req.userData._id;
+        
+        let  findUser = await UserModel.findOne({_id:userId});
+        let resObj ={
+            name:findUser.firstName + " " +findUser.lastName,
+            Id:findUser.refferalCode,
+        }
+        res.status(200).json({ response: resObj, message: 'Success' });
+    } catch (error) {
+        console.log(error)
+        res.status(403).json({ message: error.message }); 
+    }
+}
+
+exports.accountDelete =  async(req,res)=>{
+    try {
+       
+        let userId = req.userData._id;
+        
+        let  findUser = await UserModel.findByIdAndDelete(userId);
+       
+        res.status(200).json({ response: findUser, message: 'Success' });
+    } catch (error) {
+        console.log(error)
+        res.status(403).json({ message: error.message }); 
+    }
+}
+
+exports.aboutGet =  async(req,res)=>{
+    try {
+       
+        // let userId = req.userData._id;
+        
+        let  findUser = await AboutModel.find();
+       
+        res.status(200).json({ response: findUser, message: 'Success' });
+    } catch (error) {
+        console.log(error)
+        res.status(403).json({ message: error.message }); 
+    }
+}
+
+exports.resetPassword =  async(req,res)=>{
+    try {
+        const schema = Joi.object().keys({
+            verficationCode: Joi.string().required(),      
+            emailId: Joi.string().required(),      
+        })
+        let da = await schema.validateAsync(req.body);
+        let userId = req.userData._id
+        let email = req.userData.emailId
+        let verificationCode = req.userData.verificationCode
+        let otmMsg =null;
+        console.log(verificationCode)
+        if(req.body.email == email){
+            if(verificationCode == req.body.verficationCode){
+
+                otmMsg = "verification success !!";
+            }else{
+                throw new Error('Invalid verificationCode .')
+            }
+        }else{
+            throw new Error('Invalid Email .')
+        }
+        console.log(userId)
+      
+        res.status(200).json({ response: otmMsg, message: 'Success' });
+    } catch (error) {
+        console.log(error)
+        res.status(403).json({ message: error.message }); 
+    }
+}
+

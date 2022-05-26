@@ -132,39 +132,7 @@ const UserSchema = new mongoose.Schema({
         default: 0 
     },   
     
-    // bankDetail: {
-    //     accountNumber:{
-    //         type: String,
-    //         default:null
-    //     },
-    //     accountHoldarName:{
-    //         type: String,
-    //         default:null
-    //     },
-    //     branchName:{
-    //         type: String,
-    //         default:null
-    //     },
-    //     ifscCode:{
-    //         type: String,
-    //         default:null
-    //     }
-    // },
-    // cardDetails: {
-    //     cardNumber : {
-    //         type: String,
-    //         default:null
-    //     },
-    //     cardExpiryDate : {
-    //         type: String,
-    //         default:null
-    //     },
-    //     cvv : {
-    //         type: String,
-    //         default:null
-    //     },
-       
-    // },
+
     
     latitude: {
         type: Number,
@@ -183,17 +151,6 @@ const UserSchema = new mongoose.Schema({
         },
         coordinates: [Number]
     },
-    // favlocation: {
-    //     type: {
-    //         type: String,
-    //         default: 'Point'
-    //     },
-    //     address: {
-    //         type: String,
-    //         default: null
-    //     },
-    //     coordinates: [Number]
-    // },
     
     
     rewardPoint: {
