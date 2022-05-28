@@ -51,7 +51,7 @@ exports.login = async(req,res)=>{
        
         }
         
-        res.status(200).json({ response: userDetails, message: "success" });
+        res.status(200).json({responseCode:2000, message: "success", data: userDetails,  });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
@@ -87,7 +87,7 @@ exports.changePassword = async(req,res)=>{
        
         }
         
-        res.status(200).json({ response: userDetails, message: "success" });
+        res.status(200).json({responseCode:2000, message: "success", data: userDetails });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
@@ -152,12 +152,12 @@ exports.userSignup = async(req, res) => {
 
         let user = new UserModel(Data);
         let userDetails = await user.save();
-        var findUser = await UserModel.findById({ _id: userDetails._id }, {}, { lean: true })
+        var findUser = await UserModel.findById({ _id: userDetails._id }, {fullName:0,dob:0,onlineStatus:0,isApproved:0,isProfileCreated:0,isTermAccept:0,isBlock:0,socialType:0,userPermission:0,latitude:0,longitude:0,location:0}, { lean: true })
         if (!userDetails) {
             throw new Error('Unable to add details.')
         }
         // let findUser = await UserModel.deleteMany();
-        res.status(200).json({ response: userDetails, message: 'Signup Successfully' });
+        res.status(200).json({responseCode:2000,message: 'Signup Successfully',data: findUser, });
 
 
     } catch (error) {
@@ -191,7 +191,7 @@ exports.emailVerify =  async(req,res)=>{
         }
         console.log(userId)
       
-        res.status(200).json({ response: otmMsg, message: 'Success' });
+        res.status(200).json({ responseCode:2000,message: "success",response: otmMsg,  });
     } catch (error) {
         console.log(error)
         res.status(403).json({ message: error.message }); 
@@ -207,7 +207,7 @@ exports.logout =  async(req,res)=>{
             accessToken:null,
         }    
         var findUser = await UserModel.findByIdAndUpdate(userId, {$set:logoutObj},{new:true})
-        res.status(200).json({ response: findUser, message: 'Success' });
+        res.status(200).json({responseCode:2000,message: "success", data: findUser,});
     } catch (error) {
         console.log(error)
         res.status(403).json({ message: error.message }); 
@@ -224,7 +224,7 @@ exports.account =  async(req,res)=>{
             name:findUser.firstName + " " +findUser.lastName,
             Id:findUser.refferalCode,
         }
-        res.status(200).json({ response: resObj, message: 'Success' });
+        res.status(200).json({responseCode:2000,message: 'Success', data: resObj, });
     } catch (error) {
         console.log(error)
         res.status(403).json({ message: error.message }); 
@@ -238,7 +238,7 @@ exports.accountDelete =  async(req,res)=>{
         
         let  findUser = await UserModel.findByIdAndDelete(userId);
        
-        res.status(200).json({ response: findUser, message: 'Success' });
+        res.status(200).json({responseCode:2000, message: 'Success',  data: findUser,});
     } catch (error) {
         console.log(error)
         res.status(403).json({ message: error.message }); 
@@ -252,7 +252,7 @@ exports.aboutGet =  async(req,res)=>{
         
         let  findUser = await AboutModel.find();
        
-        res.status(200).json({ response: findUser, message: 'Success' });
+        res.status(200).json({responseCode:2000, message: 'Success', data: findUser, });
     } catch (error) {
         console.log(error)
         res.status(403).json({ message: error.message }); 
@@ -283,7 +283,7 @@ exports.resetPassword =  async(req,res)=>{
         }
         console.log(userId)
       
-        res.status(200).json({ response: otmMsg, message: 'Success' });
+        res.status(200).json({ responseCode:2000,message: 'Success', data: otmMsg,  });
     } catch (error) {
         console.log(error)
         res.status(403).json({ message: error.message }); 
