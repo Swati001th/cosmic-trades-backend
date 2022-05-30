@@ -10,6 +10,11 @@ const auth = require("../Modules/auth");
 const utill = require("../Modules/utill");
 const UserModel  = require("../Models/UserModel");
 const AboutModel  = require("../Models/AboutModel");
+var API = require('indian-stock-exchange');
+const { findByIdAndUpdate } = require("../Models/UserModel");
+ 
+var NSEAPI = API.NSE;
+var BSEAPI = API.BSE;
 exports.login = async(req,res)=>{
     try {
         const schema = Joi.object().keys({
@@ -262,26 +267,22 @@ exports.aboutGet =  async(req,res)=>{
 exports.resetPassword =  async(req,res)=>{
     try {
         const schema = Joi.object().keys({
-            verficationCode: Joi.string().required(),      
+            // verficationCode: Joi.string().required(),      
             emailId: Joi.string().required(),      
         })
         let da = await schema.validateAsync(req.body);
-        let userId = req.userData._id
-        let email = req.userData.emailId
-        let verificationCode = req.userData.verificationCode
-        let otmMsg =null;
-        console.log(verificationCode)
-        if(req.body.email == email){
-            if(verificationCode == req.body.verficationCode){
-
-                otmMsg = "verification success !!";
-            }else{
-                throw new Error('Invalid verificationCode .')
-            }
+        
+        let email = req.body.emailId
+        let code  = 123456;  
+        let  findUser = await UserModel.findOne({email:email});
+        let ress = null;
+        if(!findUser){
+            throw new Error('Invalid email !')
         }else{
-            throw new Error('Invalid Email .')
+            ress= await UserModel.findByIdAndUpdate(findUser._id,{set:{otp:code}})
         }
-        console.log(userId)
+        // let verificationCode = req.userData.verificationCode
+        let otmMsg ="sent confirmation code successfully !";      
       
         res.status(200).json({ responseCode:2000,message: 'Success', data: otmMsg,  });
     } catch (error) {
@@ -290,3 +291,23 @@ exports.resetPassword =  async(req,res)=>{
     }
 }
 
+exports.getIndices = async(req,res)=>{
+    try {
+        let nseIndices = null;
+        indices = await BSEAPI.getIndices()
+        .then(function (response) { 
+            console.log(response.data); //return the api data
+            return response.data
+        });
+        let bseIndices =  await BSEAPI.getIndices()
+        .then(function (response) { 
+            return response.data;
+        // console.log(response.data); //return the api data
+        });
+       res.status(200).json({ responseCode:2000,message: 'Success', data:{bseIndices:bseIndices,nseIndices:nseIndices},  });
+  
+    } catch (error) {
+        console.log(error)
+        res.status(403).json({ message: error.message }); 
+    }
+}
