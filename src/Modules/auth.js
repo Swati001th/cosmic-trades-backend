@@ -9,7 +9,7 @@ exports.userAuthentication = async (req, res, next) => {
         // console.log("access_token : ",access_token);
         jwt.verify(access_token, config.JWT_PRIVATE_KEY, async function (err, decoded) {
             if (!err) {
-                let user = await UserModel.findOne({ access_token: access_token })
+                let user = await UserModel.findOne({ accessToken: access_token })
                 if (!user) {
                     res.status(401).json({ status: 400, message: "Invalid access_token, please relogin to access this feature."});
                     return;
