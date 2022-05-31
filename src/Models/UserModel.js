@@ -75,7 +75,6 @@ const UserSchema = new mongoose.Schema({
     
     verificationCode: {
         type: String,
-        default: "1234"
     },
     otp: {
         type: String,
