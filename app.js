@@ -3,6 +3,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var udp = require('dgram');
+const server = udp.createSocket('udp4');
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -42,5 +45,26 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// udp connection 
+
+
+server.on('error', (err) => {
+  console.log(`server error:\n${err.stack}`);
+  server.close();
+});
+
+server.on('message', (msg, rinfo) => {
+  console.log(`server got: ${msg} from ${`239.70.70.71`}:${`17741`}`);
+});
+
+server.on('listening', () => {
+    const address = server.address();
+    console.log(`UDP server listening ${address.address}:${address.port}`);
+  });
+
+server.bind(3000);
+
+// end udp connection 
 
 module.exports = app;
