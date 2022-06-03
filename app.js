@@ -63,8 +63,10 @@ server.on('listening', () => {
     console.log(`UDP server listening ${address.address}:${address.port}`);
   });
 
-server.bind(3000);
+server.bind(9001);
 
 // end udp connection 
+
+
 
 module.exports = app;

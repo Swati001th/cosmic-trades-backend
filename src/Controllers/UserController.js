@@ -88,7 +88,10 @@ exports.changePassword = async (req, res) => {
         let userDetails = null
         if (checkPass) {
             let encPassword = await utill.encryptText(data.setNewpassword);
-            userDetails = await UserModel.findByIdAndUpdate(userId, { $set: { password: encPassword }, }, { new: true }
+            userDetails = await UserModel.findByIdAndUpdate(userId, { $set: { password: encPassword }, }, {
+                "fields": { fullName: 0, dob: 0, onlineStatus: 0, isApproved: 0, isProfileCreated: 0, isTermAccept: 0, isBlock: 0, socialType: 0, userPermission: 0, latitude: 0, longitude: 0, location: 0 },
+                "new": true
+            }, 
             ).lean();
 
         } else {
@@ -215,7 +218,9 @@ exports.logout = async (req, res) => {
             deviceToken: null,
             accessToken: null,
         }
-        var findUser = await UserModel.findByIdAndUpdate(userId, { $set: logoutObj }, { new: true })
+        var findUser = await UserModel.findByIdAndUpdate(userId, { $set: logoutObj },  { "fields": { fullName: 0, dob: 0, onlineStatus: 0, isApproved: 0, isProfileCreated: 0, isTermAccept: 0, isBlock: 0, socialType: 0, userPermission: 0, latitude: 0, longitude: 0, location: 0 },
+        "new": true
+    }, )
         res.status(200).json({ responseCode: 2000, message: "success", data: findUser, });
     } catch (error) {
         console.log(error)
