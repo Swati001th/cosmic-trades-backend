@@ -222,7 +222,7 @@ exports.OtpVerify = async (req, res) => {
         let otmMsg = null;
         // console.log(verificationCode)
         if (req.body.email == email) {
-            if (req.body.otp == '1234') {
+            if (req.body.otp == '123456') {
 
                 otmMsg = "verification success !!";
             } else {
