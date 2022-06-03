@@ -6,9 +6,9 @@ const mongoose = require('mongoose');
 
 //for server
 //  
-//  const conn = mongoose.connect('mongodb://cosmicuser:cosmicT0011@127.0.0.1:27017/cosmic_db', { useNewUrlParser: true,useUnifiedTopology:true, }); // for local
+  const conn = mongoose.connect('mongodb://cosmicuser:cosmicT0011@127.0.0.1:27017/cosmic_db', { useNewUrlParser: true,useUnifiedTopology:true, }); // for local
  //local
- const conn = mongoose.connect('mongodb://127.0.0.1:27017/cosmic_db', { useNewUrlParser: true,useUnifiedTopology:true, }); // for local
+//  const conn = mongoose.connect('mongodb://127.0.0.1:27017/cosmic_db', { useNewUrlParser: true,useUnifiedTopology:true, }); // for local
 
 exports.mongoose = mongoose;
 
