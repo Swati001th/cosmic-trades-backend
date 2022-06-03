@@ -209,7 +209,36 @@ exports.emailVerify = async (req, res) => {
         res.status(403).json({ message: error.message });
     }
 }
+exports.OtpVerify = async (req, res) => {
+    try {
+        const schema = Joi.object().keys({
+            otp : Joi.string().required(),
+            emailId: Joi.string().required(),
+        })
+        let da = await schema.validateAsync(req.body);
+        let userId = req.userData._id
+        let email = req.userData.emailId
+        let Userdata = await UserModel.findOne({ email: req.body.emailId })
+        let otmMsg = null;
+        // console.log(verificationCode)
+        if (req.body.email == email) {
+            if (req.body.otp == '1234') {
 
+                otmMsg = "verification success !!";
+            } else {
+                throw new Error('Invalid verificationCode .')
+            }
+        } else {
+            throw new Error('Invalid Email .')
+        }
+        console.log(userId)
+
+        res.status(200).json({ responseCode: 2000, message: "success", response: otmMsg, });
+    } catch (error) {
+        console.log(error)
+        res.status(403).json({ message: error.message });
+    }
+}
 exports.logout = async (req, res) => {
     try {
 
