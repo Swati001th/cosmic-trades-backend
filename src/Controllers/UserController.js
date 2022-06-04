@@ -253,7 +253,7 @@ exports.OtpVerify = async (req, res) => {
             emailId: Joi.string().required(),
         })
         let da = await schema.validateAsync(req.body);
-        let userId = req.userData._id
+        // let userId = req.userData._id
         let email = req.userData.emailId
         let Userdata = await UserModel.findOne({ email: req.body.emailId })
         let otmMsg = null;
