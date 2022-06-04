@@ -104,7 +104,40 @@ exports.changePassword = async (req, res) => {
         res.status(404).json({ message: error.message });
     }
 }
+exports.varifyPassword = async (req, res) => {
+    try {
+        const schema = Joi.object().keys({
+        Newpassword: Joi.string().required(),
+        email:Joi.string().required(),
+        })
+        let da = await schema.validateAsync(req.body);
+        let data = req.body;
+        // let userId = req.userData._id
+        let userExist = await UserModel.findOne({
+            email: data.email,
 
+        }).lean();
+        if (!userExist || userExist == null) {
+            throw new Error("In valid user ");
+
+        }
+        // let checkPass = await utill.compare(data.currentPassword, userExist.password);
+        // console.log(checkPass, "::::::::::::::::::::::::::password");
+        let userDetails = null
+            let encPassword = await utill.encryptText(data.Newpassword);
+            userDetails = await UserModel.findByIdAndUpdate(userExist._id, { $set: { password: encPassword }, }, {
+                "fields": { fullName: 0, dob: 0, onlineStatus: 0, isApproved: 0, isProfileCreated: 0, isTermAccept: 0, isBlock: 0, socialType: 0, userPermission: 0, latitude: 0, longitude: 0, location: 0 },
+                "new": true
+            }, 
+            ).lean();
+
+      
+
+        res.status(200).json({ responseCode: 2000, message: "success", data: userDetails });
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+}
 exports.userSignup = async (req, res) => {
 
     try {
@@ -158,6 +191,10 @@ exports.userSignup = async (req, res) => {
             let nameData = await UserModel.findOne({ $and: [{ "userName": userName }] })
             if (nameData) {
                 throw new Error("UserName Already Exit");
+            }
+            let emailData = await UserModel.findOne({ $and: [{ "email":email  }] })
+            if (emailData) {
+                throw new Error("email Already Exit");
             }
         }
         let Data = { firstName, lastName, mobileNumber, deposite, address, userName, location, longitude, latitude, countryCode, accessToken, verificationCode, deviceToken, email, deviceType, userType, password: encPassword, refferalCode: refferalCode };
