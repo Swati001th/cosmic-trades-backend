@@ -254,11 +254,11 @@ exports.OtpVerify = async (req, res) => {
         })
         let da = await schema.validateAsync(req.body);
         // let userId = req.userData._id
-        let email = req.userData.emailId
+        // let email = req.userData.emailId
         let Userdata = await UserModel.findOne({ email: req.body.emailId })
         let otmMsg = null;
         // console.log(verificationCode)
-        if (req.body.email == email) {
+        if (req.body.emailId == Userdata.email) {
             if (req.body.otp == '123456') {
 
                 otmMsg = "verification success !!";
@@ -268,7 +268,7 @@ exports.OtpVerify = async (req, res) => {
         } else {
             throw new Error('Invalid Email .')
         }
-        console.log(userId)
+        // console.log(userId)
 
         res.status(200).json({ responseCode: 2000, message: "success", response: otmMsg, });
     } catch (error) {
