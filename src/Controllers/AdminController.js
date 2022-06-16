@@ -10,7 +10,7 @@ const auth = require("../Modules/auth");
 const utill = require("../Modules/utill");
 const AboutModel = require("../Models/AboutModel");
 const UserModel = require("../Models/UserModel");
-const AdminModel = require("../Models/adminModel");
+const AdminModel = require("../Models/AdminModel");
 
 exports.aboutAdd = async (req, res) => {
   try {
