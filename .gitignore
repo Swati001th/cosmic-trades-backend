@@ -86,3 +86,5 @@ summaryData/
 .vscode
 
 /.git/index.lock
+/src/Services/mongooes.js
+src/Services/mongooes.js

@@ -56,25 +56,25 @@ app.use(function (err, req, res, next) {
 
 // udp connection
 
-server.on("error", (err) => {
-  console.log(`server error:\n${err.stack}`);
-  server.close();
-});
+// server.on("error", (err) => {
+//   console.log(`server error:\n${err.stack}`);
+//   server.close();
+// });
 
-server.on("message", (msg, rinfo) => {
-  console.log(`server got: ${msg} from ${`239.70.70.71`}:${`17741`}`);
-});
+// server.on("message", (msg, rinfo) => {
+//   console.log(`server got: ${msg} from ${`239.70.70.71`}:${`17741`}`);
+// });
 
-server.on("listening", () => {
-  const address = server.address();
-  console.log(`server listening ${address.address}:${address.port}`);
-});
+// server.on("listening", () => {
+//   const address = server.address();
+//   console.log(`server listening ${address.address}:${address.port}`);
+// });
 
-server.bind({
-  address: "http://239.50.51.21",
-  port: 8080,
-  exclusive: true,
-});
+// server.bind({
+//   address: "http://239.50.51.21",
+//   port: 8080,
+//   exclusive: true,
+// });
 
 // end udp connection
 
